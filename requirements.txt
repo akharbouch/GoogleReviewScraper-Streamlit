@@ -1,4 +1,5 @@
 streamlit
 openai
+serpapi
 google-search-results
 googlemaps
