@@ -9,7 +9,7 @@ from tqdm.notebook import tqdm
 tqdm.pandas()
 
 
-serp_api_key=st.secrets["api"]["serp_api_key"]
+serp_api_key=st.secrets["serp_api_key"]
 def search_results(google_search):
     params = {
       "engine": "google",
