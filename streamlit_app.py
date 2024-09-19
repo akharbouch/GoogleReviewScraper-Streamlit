@@ -1,12 +1,13 @@
 import streamlit as st
-from openai import OpenAI
-
 from serpapi import GoogleSearch
 import googlemaps
 import csv
 import pandas as pd
 from tqdm.notebook import tqdm
 tqdm.pandas()
+
+import gspread
+from google.oauth2.service_account import Credentials
 
 
 serp_api_key=st.secrets["serp_api_key"]
@@ -140,7 +141,17 @@ def fetch_reviews(place_id, api_key, max_reviews=18):
 
     return all_reviews[:18]
 
+# Load Google service account credentials from Streamlit secrets
+creds_dict = st.secrets["gcp_service_account"]
 
+# Define the scope for Google Sheets API (make sure this scope is correct)
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+# Initialize the credentials with the correct scope
+creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+
+# Authorize the client with the credentials
+client = gspread.authorize(creds)
 
 # Show title and description.
 st.title("Google Review Scraper")
@@ -220,6 +231,12 @@ elif clicked:
             # st.metric(label="The percentage of reviews mentioning alcohol is:", value=f"{perc_alc_reviews:.0f}%")
             # st.metric(label="The reservation provider is:", value=reservationprovider)
             # st.metric(label="The Google Classification found is:", value=googleclassification_found)
+            spreadsheet_url = "https://docs.google.com/spreadsheets/d/1LuL0SsVe1GsJ-yGyY0L9OxRUUENjBo6pIWHR7HZRmRE/edit?gid=0#gid=0"
+            sheet = client.open_by_url(spreadsheet_url).sheet1  # Select the first sheet
+            sheet.append_row([query,placeid,	address	,name,	searchlink,	reservationprovider,	price_found	,googleclassification_found, reviewsresult[0],	reviewsresult[1],reviewsresult[2]])  # Add data to the sheet
+            st.success("Data submitted to Google Sheets!")
+
+
 
 
 
