@@ -200,6 +200,7 @@ elif clicked:
             st.divider()
             st.write("**The Price Range is:**")
             st.info( price_found )
+            st.divider()
             st.write("**Number of reviews scraped:**")
             st.info(reviewsresult[0])
             st.divider()
@@ -211,7 +212,7 @@ elif clicked:
             st.divider()
             st.write("**The percentage of reviews mentioning 'alcohol' is:**")
             st.info(f"{perc_alc_reviews:.0f}%")
-            st.divider()
+
             # st.metric(label="Number of reviews scraped:", value=reviewsresult[0])
             # st.metric(label="Number of reviews mentioning 'pizza':", value=reviewsresult[1])
             # st.metric(label="The percentage of reviews mentioning 'pizza' is:", value=f"{perc_pizza_reviews:.0f}%")
