@@ -144,51 +144,82 @@ def fetch_reviews(place_id, api_key, max_reviews=18):
 
 # Show title and description.
 st.title("Google Review Scraper")
-st.write(
-    "Please enter the Shop Name, Address, and Zip Code"
 
-)
 
 # Ask user for their OpenAI API key via `st.text_input`.
 # Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
 # via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
-else:
+query = st.text_input("Please enter the Shop Name, Address, and Zip Code", type="default")
+clicked=st.button("Submit query")
 
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
+if clicked==False:
+    st.info("**Example**: *Portofino's Italian Kitchen 396 Brockton Ave 02351*", icon="⌨️")
 
-    # Let the user upload a file via `st.file_uploader`.
-    uploaded_file = st.file_uploader(
-        "Upload a document (.txt or .md)", type=("txt", "md")
-    )
+elif clicked and len(query)<10:
+    st.error("Input too short",icon="🚨")
+    st.info("Example: Portofino's Italian Kitchen 396 Brockton Ave 02351", icon="⌨️")
+     
+elif clicked:
+    searchresults=search_results(query)
+    placeid=get_place_id(searchresults)
+    if placeid is None:
+        error_message = "Could not find PlaceID on Google"
+        st.error("Could not find PlaceID on Google",icon="🚨")
+    else:
+        address=get_place_address(searchresults)
+        name=get_shop_name(searchresults)
+        searchlink=get_search_link(searchresults)
+        reviewsresult=review_audit(placeid,18)
+        reservationprovider=reservation_type(searchresults)
+        emails_found=email_lookup(searchresults)
+        price_found=price_lookup(searchresults)
+        googleclassification_found=googleclassification_lookup(searchresults)
 
-    # Ask the user for a question via `st.text_area`.
-    question = st.text_area(
-        "Now ask a question about the document!",
-        placeholder="Can you give me a short summary?",
-        disabled=not uploaded_file,
-    )
+        if reviewsresult[0]==0:
+            st.error("No more search credits available or no reviews found. Run a manual Google Search for this shop to see if reviews exist and if so, it likely means we have no more search credits",icon="🚨")
+        else:
+            perc_pizza_reviews=reviewsresult[1]/reviewsresult[0]*100
+            perc_alc_reviews=reviewsresult[2]/reviewsresult[0]*100
+            # st.metric(label="The name of the shop is:", value=name)
+            # st.metric(label="The address of the shop is:", value=address)
+            # st.metric(label="The search URL of the shop is:", value=searchlink)
+            st.write("**The name of the shop is:**")
+            st.info(name)
+            st.divider()
+            st.write("**The address of the shop is:**")
+            st.info(address)
+            st.divider()
+            st.write("**The search URL of the shop is:**")
+            st.info(searchlink)
+            st.divider()
+            st.write("**The reservation provider is:**")
+            st.info(reservationprovider)
+            st.divider()
+            st.write("**The Google Classification is:**")
+            st.info(googleclassification_found)
+            st.divider()
+            st.write("**The Price Range is:**")
+            st.info( price_found )
+            st.write("**Number of reviews scraped:**")
+            st.info(reviewsresult[0])
+            st.divider()
+            st.write("**Number of reviews mentioning 'pizza':**")
+            st.info(reviewsresult[1])
+            st.divider()
+            st.write("**The percentage of reviews mentioning 'pizza' is:**")
+            st.info(f"{perc_pizza_reviews:.0f}%")
+            st.divider()
+            st.write("**The percentage of reviews mentioning 'alcohol' is:**")
+            st.info(f"{perc_alc_reviews:.0f}%")
+            st.divider()
+            # st.metric(label="Number of reviews scraped:", value=reviewsresult[0])
+            # st.metric(label="Number of reviews mentioning 'pizza':", value=reviewsresult[1])
+            # st.metric(label="The percentage of reviews mentioning 'pizza' is:", value=f"{perc_pizza_reviews:.0f}%")
+            
+            # st.metric(label="The percentage of reviews mentioning alcohol is:", value=f"{perc_alc_reviews:.0f}%")
+            # st.metric(label="The reservation provider is:", value=reservationprovider)
+            # st.metric(label="The Google Classification found is:", value=googleclassification_found)
 
-    if uploaded_file and question:
 
-        # Process the uploaded file and question.
-        document = uploaded_file.read().decode()
-        messages = [
-            {
-                "role": "user",
-                "content": f"Here's a document: {document} \n\n---\n\n {question}",
-            }
-        ]
 
-        # Generate an answer using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=messages,
-            stream=True,
-        )
 
-        # Stream the response to the app using `st.write_stream`.
-        st.write_stream(stream)
