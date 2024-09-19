@@ -3,3 +3,5 @@ openai
 serpapi
 google-search-results
 googlemaps
+gspread 
+google-auth
