@@ -5,3 +5,4 @@ google-search-results
 googlemaps
 gspread 
 google-auth
+requests
