@@ -126,9 +126,7 @@ def fetch_reviews(place_id, api_key, max_reviews=18):
             "place_id": place_id,
             "api_key": api_key,
             "hl": "en",  
-            "sort_by": "qualityScore",
-            "gl":"us", 
-            "device":"desktop"
+            "sort_by": "qualityScore"
         }
 
         if next_page_token:
