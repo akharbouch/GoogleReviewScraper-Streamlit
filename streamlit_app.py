@@ -4,6 +4,7 @@ import googlemaps
 import csv
 import pandas as pd
 from tqdm.notebook import tqdm
+import requests
 tqdm.pandas()
 
 import gspread
@@ -231,10 +232,36 @@ elif clicked:
             # st.metric(label="The percentage of reviews mentioning alcohol is:", value=f"{perc_alc_reviews:.0f}%")
             # st.metric(label="The reservation provider is:", value=reservationprovider)
             # st.metric(label="The Google Classification found is:", value=googleclassification_found)
-            spreadsheet_url = "https://docs.google.com/spreadsheets/d/1LuL0SsVe1GsJ-yGyY0L9OxRUUENjBo6pIWHR7HZRmRE/edit?gid=0#gid=0"
-            sheet = client.open_by_url(spreadsheet_url).sheet1  # Select the first sheet
-            sheet.append_row([query,placeid,	address	,name,	searchlink,	reservationprovider,	price_found	,googleclassification_found, reviewsresult[0],	reviewsresult[1],reviewsresult[2]])  # Add data to the sheet
-            st.success("Data submitted to Google Sheets!")
+            
+
+            # The Google Form action URL
+            form_url = 'https://docs.google.com/forms/d/e/1FAIpQLSfHCWhr8QXP7vAOP3WyJFSowu5BnMkm2QVrNKnwj7RTiN0sFg/formResponse'
+
+            # The form fields (entry IDs) and the data to submit
+            form_data = {
+                'entry.196438386': query,
+                'entry.217975455': address,
+                'entry.315385946': reservationprovider,
+                'entry.425258006': googleclassification_found,
+                'entry.885294045': name,
+                'entry.1147048836': price_found,
+                'entry.1186099979': searchlink,
+                'entry.1462800292': placeid,
+                'entry.1507746828': reviewsresult[1],
+                'entry.1765641676': reviewsresult[0],
+                'entry.1808547668': reviewsresult[2]
+            }
+
+            # Submit the form using a POST request
+            response = requests.post(form_url, data=form_data)
+
+            # Check the response status
+            if response.status_code == 200:
+                st.divider()
+                st.success("Data submitted to Google Sheets!")
+            else:
+                st.divider()
+                st.error(f'Failed to submit to Google Sheets. Status code: {response.status_code}')
 
 
 
