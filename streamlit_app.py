@@ -16,7 +16,10 @@ def search_results(google_search):
     params = {
       "engine": "google",
       "q": google_search,
-      "api_key": serp_api_key
+      "api_key": serp_api_key,
+      "hl":"en",
+      "gl":"us", 
+      "device":"desktop"
     }
 
     search = GoogleSearch(params)
@@ -123,7 +126,9 @@ def fetch_reviews(place_id, api_key, max_reviews=18):
             "place_id": place_id,
             "api_key": api_key,
             "hl": "en",  
-            "sort_by": "qualityScore"
+            "sort_by": "qualityScore",
+            "gl":"us", 
+            "device":"desktop"
         }
 
         if next_page_token:
