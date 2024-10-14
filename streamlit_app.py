@@ -1,5 +1,5 @@
 import streamlit as st
-from serpapi import GoogleSearch
+import serpapi as GoogleSearch
 import googlemaps
 import csv
 import pandas as pd
