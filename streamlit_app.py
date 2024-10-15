@@ -10,7 +10,6 @@ tqdm.pandas()
 import gspread
 from google.oauth2.service_account import Credentials
 
-
 serp_api_key=st.secrets["serp_api_key"]
 def search_results(google_search):
     params = {
@@ -22,8 +21,9 @@ def search_results(google_search):
       "device":"desktop"
     }
 
-    search = GoogleSearch(params)
-    results = search.get_dict()
+    a=print(params)
+    search = GoogleSearch(params)  # Unpacking params
+    results = search.get_dict()  # Assuming this method exists
     return results
 
 def store_search_id(results):  
@@ -183,13 +183,14 @@ elif clicked:
     else:
         address=get_place_address(searchresults)
         name=get_shop_name(searchresults)
+        print(name)
         searchlink=get_search_link(searchresults)
         reviewsresult=review_audit(placeid,18)
+
         reservationprovider=reservation_type(searchresults)
         emails_found=email_lookup(searchresults)
         price_found=price_lookup(searchresults)
         googleclassification_found=googleclassification_lookup(searchresults)
-
         if reviewsresult[0]==0:
             st.error("No more search credits available or no reviews found. Run a manual Google Search for this shop to see if reviews exist and if so, it likely means we have no more search credits",icon="🚨")
         else:
