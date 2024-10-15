@@ -21,7 +21,6 @@ def search_results(google_search):
       "device":"desktop"
     }
 
-    a=print(params)
     search = GoogleSearch(params)  # Unpacking params
     results = search.get_dict()  # Assuming this method exists
     return results
