@@ -4,9 +4,7 @@ import serpapi
 from serpapi import GoogleSearch
 import csv
 import pandas as pd
-from tqdm.notebook import tqdm
 
-tqdm.pandas()
 
 import gspread
 from google.oauth2.service_account import Credentials
