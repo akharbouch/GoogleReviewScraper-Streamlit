@@ -1,9 +1,8 @@
 import streamlit as st
-import serpapi
+import requests
 from serpapi import GoogleSearch
 import csv
 import pandas as pd
-import requests
 
 import gspread
 from google.oauth2.service_account import Credentials
