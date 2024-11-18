@@ -1,4 +1,5 @@
 import streamlit as st
+import serpapi
 from serpapi import GoogleSearch
 import googlemaps
 import csv
