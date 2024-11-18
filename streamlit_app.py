@@ -1,11 +1,11 @@
+import requests
 import streamlit as st
 import serpapi
 from serpapi import GoogleSearch
-import googlemaps
 import csv
 import pandas as pd
 from tqdm.notebook import tqdm
-import requests
+
 tqdm.pandas()
 
 import gspread
