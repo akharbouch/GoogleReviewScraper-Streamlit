@@ -1,6 +1,6 @@
 streamlit
 google-search-results
---serpapi
+#serpapi
 googlemaps
 gspread 
 google-auth
