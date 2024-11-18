@@ -1,4 +1,3 @@
-
 import streamlit as st
 import serpapi
 from serpapi import GoogleSearch
